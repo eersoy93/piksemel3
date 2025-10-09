@@ -999,6 +999,7 @@ static struct PyModuleDef moduledef = {
     methods,             /* m_methods */
 };
 
+__attribute__((visibility("default")))
 PyMODINIT_FUNC
 PyInit_piksemel(void)
 {

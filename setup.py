@@ -71,7 +71,7 @@ setup(
         Extension(
             'piksemel',
             sources=['src/iksemel.c', 'src/pyiks.c'],
-            extra_compile_args=["-fvisibility=default"]
+            extra_compile_args=["-fvisibility=hidden"]
         )
     ],
     python_requires='>=3.6',
