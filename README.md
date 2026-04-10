@@ -1,7 +1,7 @@
-# Piksemel 2.1
+# Piksemel 3
 
 Python XML API based on the iksemel library.
-Copyright (C) 2005-2006 TUBITAK/UEKAE, 2019 Safa Arıman, 2020 Erdem Ersoy, 2022 Ersoy Kardesler
+Copyright (C) 2005-2006 TUBITAK/UEKAE, 2019 Safa Arıman, 2020 Erdem Ersoy, 2022 Ersoy Kardesler, 2026 Erdem Ersoy
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
@@ -10,7 +10,7 @@ option) any later version. Please read the COPYING file.
 
 # Install
 
-You don't need anything other than an installed Python 3 framework (Python 3.6+).
+You don't need anything other than an installed Python 3 framework (Python 3.11+).
 iksemel-lite source is included and compiled built-in to the module.
 
 To compile and install:
