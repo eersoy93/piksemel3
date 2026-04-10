@@ -29,7 +29,7 @@ class CharacterData:
     """Maps character data of the XML node into a variable."""
     def parse(self, ctx, doc):
         node = doc.firstChild()
-        if node.type() != piksemel.DATA or next(node) is not None:
+        if node.type() != piksemel.DATA or node.next() is not None:
             ctx.error("this tag should only contain character data")
         else:
             ctx.use(self.varname, node.data())
@@ -107,7 +107,7 @@ class Tag:
                 vals.append(c)
             else:
                 node = tag.firstChild()
-                if node.type() != piksemel.DATA or next(node) is not None:
+                if node.type() != piksemel.DATA or node.next() is not None:
                     ctx.error("this tag should only contain character data")
                 else:
                     vals.append(node.data())
@@ -178,7 +178,7 @@ class TagCollection:
                 vals.append(c)
             else:
                 node = tag.firstChild()
-                if node.type() != piksemel.DATA or next(node) is not None:
+                if node.type() != piksemel.DATA or node.next() is not None:
                     ctx.error("this tag should only contain character data")
                 else:
                     vals.append(node.data())
@@ -203,8 +203,6 @@ class LocalText(dict):
     @staticmethod
     def get_lang():
         lang, enc = locale.getlocale()
-        if not lang:
-            lang, enc = locale.getdefaultlocale()
         if not lang:
             return "en"
         return lang[:2]
@@ -247,7 +245,7 @@ class TagLocalized:
             if not lang:
                 lang = "en"
             node = tag.firstChild()
-            if node.type() != piksemel.DATA or next(node) is not None:
+            if node.type() != piksemel.DATA or node.next() is not None:
                 ctx.error("%s: Localized tag should only contain character data" % self.name)
             else:
                 if lang in val:

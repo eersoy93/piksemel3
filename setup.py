@@ -14,10 +14,7 @@ import os
 import glob
 import shutil
 import subprocess
-try:
-    from setuptools import setup, Extension
-except ImportError:
-    from distutils.core import setup, Extension
+from setuptools import setup, Extension
 
 version = '2.0a1'
 
@@ -68,7 +65,9 @@ setup(
     version=version,
     author='TUBITAK/UEKAE, Safa Arıman, Erdem Ersoy, Ersoy Kardesler',
     description='Python XML API based on the iksemel library',
-    long_description=open('README.md').read(),
+    long_description=open('README.md', encoding='utf-8').read(),
+    long_description_content_type='text/markdown',
+    python_requires='>=3.11',
     ext_modules=[
         Extension(
             'piksemel',
@@ -82,12 +81,10 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
+        'Programming Language :: Python :: 3.14',
         'Programming Language :: C',
         'Topic :: Text Processing :: Markup :: XML',
     ],

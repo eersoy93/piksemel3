@@ -48,10 +48,10 @@ static PyTypeObject Document_type = {
 	sizeof(Document),	/* tp_basicsize */
 	0,			/* tp_itemsize */
 	(destructor)Document_dealloc,	/* tp_dealloc */
-	0,			/* tp_print */
+	0,			/* tp_vectorcall_offset */
 	0,			/* tp_getattr */
 	0,			/* tp_setattr  */
-	0,			/* tp_compare */
+	0,			/* tp_as_async */
 	0,			/* tp_repr */
 	0,			/* tp_as_number */
 	0,			/* tp_as_sequence */
@@ -89,13 +89,13 @@ static PyObject *Iter_next(Iter *self);
 static PyTypeObject Iter_type = {
 	PyVarObject_HEAD_INIT(NULL, 0)
 	"piksemel.Iter",	/* tp_name */
-	sizeof(Iter),		/* tp"_basicsize */
+	sizeof(Iter),		/* tp_basicsize */
 	0,			/* tp_itemsize */
 	0,			/* tp_dealloc */
-	0,			/* tp_print */
+	0,			/* tp_vectorcall_offset */
 	0,			/* tp_getattr */
 	0,			/* tp_setattr  */
-	0,			/* tp_compare */
+	0,			/* tp_as_async */
 	0,			/* tp_repr */
 	0,			/* tp_as_number */
 	0,			/* tp_as_sequence */
@@ -224,10 +224,10 @@ static PyTypeObject Node_type = {
 	sizeof(Node),		/* tp_basicsize */
 	0,			/* tp_itemsize */
 	(destructor)Node_dealloc,/* tp_dealloc */
-	0,			/* tp_print */
+	0,			/* tp_vectorcall_offset */
 	0,			/* tp_getattr */
 	0,			/* tp_setattr  */
-	0,			/* tp_compare */
+	0,			/* tp_as_async */
 	0,			/* tp_repr */
 	0,			/* tp_as_number */
 	0,			/* tp_as_sequence */
@@ -419,7 +419,10 @@ Node_attributes(Node *self, PyObject *args)
 
 	for (attr = iks_attrib(self->node); attr; attr = iks_next(attr)) {
 		p = PyUnicode_FromString(iks_name(attr));
-		if (p) PyList_Append(ret, p);
+		if (p) {
+			PyList_Append(ret, p);
+			Py_DECREF(p);
+		}
 	}
 
 	return ret;
@@ -441,10 +444,7 @@ Node_getAttribute(Node *self, PyObject *args)
 		return NULL;
 
 	val = iks_find_attrib(self->node, name);
-	if (!val) {
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
+	if (!val) Py_RETURN_NONE;
 
 	ret = Py_BuildValue("s", val);
 	return ret;
@@ -466,8 +466,7 @@ Node_setAttribute(Node *self, PyObject *args)
 
 	iks_insert_attrib(self->node, name, value);
 
-	Py_INCREF(Py_None);
-	return Py_None;
+	Py_RETURN_NONE;
 }
 
 static PyObject *
@@ -485,8 +484,7 @@ Node_setData(Node *self, PyObject *args)
 
     iks_set_cdata(self->node, data, 0);
 
-    Py_INCREF(Py_None);
-    return Py_None;
+    Py_RETURN_NONE;
 }
 
 static PyObject *
@@ -504,10 +502,7 @@ Node_getTag(Node *self, PyObject *args)
 		return NULL;
 
 	child = iks_find(self->node, name);
-	if (!child) {
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
+	if (!child) Py_RETURN_NONE;
 
 	return new_node(self->doc, child);
 }
@@ -528,10 +523,7 @@ Node_getTagData(Node *self, PyObject *args)
 		return NULL;
 
 	data = iks_find_cdata(self->node, name);
-	if (!data) {
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
+	if (!data) Py_RETURN_NONE;
 
 	ret = Py_BuildValue("s", data);
 	return ret;
@@ -575,10 +567,7 @@ Node_firstChild(Node *self)
 	}
 
 	child = iks_child(self->node);
-	if (!child) {
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
+	if (!child) Py_RETURN_NONE;
 
 	return new_node(self->doc, child);
 }
@@ -589,10 +578,7 @@ Node_parent(Node *self)
 	iks *parent;
 
 	parent = iks_parent(self->node);
-	if (!parent) {
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
+	if (!parent) Py_RETURN_NONE;
 
 	return new_node(self->doc, parent);
 }
@@ -603,10 +589,7 @@ Node_root(Node *self)
 	iks *root;
 
 	root = iks_root(self->node);
-	if (!root) {
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
+	if (!root) Py_RETURN_NONE;
 
 	return new_node(self->doc, root);
 }
@@ -617,10 +600,7 @@ Node_next(Node *self)
 	iks *sibling;
 
 	sibling = iks_next(self->node);
-	if (!sibling) {
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
+	if (!sibling) Py_RETURN_NONE;
 
 	return new_node(self->doc, sibling);
 }
@@ -641,10 +621,7 @@ Node_nextTag(Node *self, PyObject *args)
 			if (!sibling) break;
 		}
 	}
-	if (!sibling) {
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
+	if (!sibling) Py_RETURN_NONE;
 
 	return new_node(self->doc, sibling);
 }
@@ -655,10 +632,7 @@ Node_previous(Node *self)
 	iks *sibling;
 
 	sibling = iks_prev(self->node);
-	if (!sibling) {
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
+	if (!sibling) Py_RETURN_NONE;
 
 	return new_node(self->doc, sibling);
 }
@@ -679,10 +653,7 @@ Node_previousTag(Node *self, PyObject *args)
 			if (!sibling) break;
 		}
 	}
-	if (!sibling) {
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
+	if (!sibling) Py_RETURN_NONE;
 
 	return new_node(self->doc, sibling);
 }
@@ -912,8 +883,7 @@ Node_hide(Node *self, PyObject *args)
 {
 	iks_hide(self->node);
 
-	Py_INCREF(Py_None);
-	return Py_None;
+	Py_RETURN_NONE;
 }
 
 /*** Module Functions ***/
@@ -1006,35 +976,41 @@ PyInit_piksemel(void)
 	PyObject *m;
 
 	m = PyModule_Create(&moduledef);
+	if (!m) return NULL;
+
 	/* constants */
-	PyModule_AddIntConstant(m, "TAG", IKS_TAG);
-	PyModule_AddIntConstant(m, "ATTRIBUTE", IKS_ATTRIBUTE);
-	PyModule_AddIntConstant(m, "DATA", IKS_CDATA);
+	if (PyModule_AddIntConstant(m, "TAG", IKS_TAG) < 0) goto error;
+	if (PyModule_AddIntConstant(m, "ATTRIBUTE", IKS_ATTRIBUTE) < 0) goto error;
+	if (PyModule_AddIntConstant(m, "DATA", IKS_CDATA) < 0) goto error;
+
 	/* exceptions */
 	ParseError = PyErr_NewException("piksemel.ParseError", NULL, NULL);
-	Py_INCREF(ParseError);
-	PyModule_AddObject(m, "ParseError", ParseError);
+	if (!ParseError) goto error;
+	if (PyModule_AddObjectRef(m, "ParseError", ParseError) < 0) goto error;
+
 	NotTag = PyErr_NewException("piksemel.NotTag", NULL, NULL);
-	Py_INCREF(NotTag);
-	PyModule_AddObject(m, "NotTag", NotTag);
+	if (!NotTag) goto error;
+	if (PyModule_AddObjectRef(m, "NotTag", NotTag) < 0) goto error;
+
 	NotData = PyErr_NewException("piksemel.NotData", NULL, NULL);
-	Py_INCREF(NotData);
-	PyModule_AddObject(m, "NotData", NotData);
+	if (!NotData) goto error;
+	if (PyModule_AddObjectRef(m, "NotData", NotData) < 0) goto error;
+
 	/* types */
 	Document_type.tp_new = PyType_GenericNew;
-	if (PyType_Ready(&Document_type) < 0)
-		return NULL;
-	Py_INCREF(&Document_type);
+	if (PyType_Ready(&Document_type) < 0) goto error;
+
 	Iter_type.tp_new = PyType_GenericNew;
-	if (PyType_Ready(&Iter_type) < 0)
-		return NULL;
-	Py_INCREF(&Iter_type);
+	if (PyType_Ready(&Iter_type) < 0) goto error;
+
 	Node_type.tp_new = PyType_GenericNew;
-	if (PyType_Ready(&Node_type) < 0)
-		return NULL;
-	Py_INCREF(&Node_type);
-	PyModule_AddObject(m, "Node", (PyObject *)&Node_type);
+	if (PyType_Ready(&Node_type) < 0) goto error;
+	if (PyModule_AddType(m, &Node_type) < 0) goto error;
 
 	piksemel_module = m;
 	return piksemel_module;
+
+error:
+	Py_DECREF(m);
+	return NULL;
 }
