@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2006-2007, TUBITAK/UEKAE
+# Copyright (C) 2006 TUBITAK/UEKAE, 2019 Safa Arıman, 2020 Erdem Ersoy, 2022 Ersoy Kardesler, 2026 Erdem Ersoy
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
