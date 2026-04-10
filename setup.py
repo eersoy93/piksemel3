@@ -16,7 +16,7 @@ import shutil
 import subprocess
 from setuptools import setup, Extension
 
-version = '2.0a1'
+version = '3.0.0'
 
 distfiles = """
     README.md
