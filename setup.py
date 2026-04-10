@@ -24,6 +24,7 @@ distfiles = """
     src/iksemel.c
     src/iksemel.h
     src/pyiks.c
+    src/autoxml.py
     tests/*.py
 """
 
